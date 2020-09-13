@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: "conversations-virtual-host-ingress"
+  labels:
+    app: "conversations"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: "/conversations(/|$)(.*)"
+        backend:
+          serviceName: "conversations-service"
+          servicePort: 80

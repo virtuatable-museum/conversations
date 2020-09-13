@@ -1,0 +1,177 @@
+orbs:
+  kube: circleci/kubernetes@0.11.0
+
+commands:
+  # This command sets up the important bits of the ruby environment
+  # used in most of the jobs for the main workflow.
+  setup_environment:
+    steps:
+      - checkout
+      - run: |
+          gem install bundler --no-document
+      - run: |
+          bundle update --bundler
+
+jobs:
+  # This job runs the unit tests and stores the results in
+  # a folder where circleci can access to display results.
+  rspec:
+    docker:
+      - image: cimg/ruby:2.7.1
+      - image: mongo:4.4-bionic-ram
+    steps:
+      - run:
+          name: Creates RSpec directory
+          command: mkdir -p /tmp/results/rspec
+      - setup_environment
+      - run:
+          name: Runs unit tests
+          command: |
+            bundle exec rspec \
+              --format RSpecJunitFormatter \
+              --out /tmp/results/rspec/results.xml \
+              --format html \
+              --out /tmp/results/rspec/results.html \
+              --format progress \
+              spec/
+      - store_test_results:
+          path: /tmp/results/rspec
+      - store_artifacts:
+          path: /tmp/results
+          destination: results
+  # This job runs the Rubocop Linter and stores the results
+  # in a folder where circleci can access to display them.
+  rubocop:
+    docker:
+      - image: cimg/ruby:2.7.1
+    steps:
+      - run:
+          name: Creates Rubocop directory
+          command: mkdir /tmp/rubocop
+      - setup_environment
+      - run:
+          name: Runs Rubocop checks
+          command: |
+            bundle exec rubocop \
+              --fail-fast \
+              --format html \
+              --out /tmp/rubocop/results.html \
+              controllers/ decorators/ services/
+      - store_test_results:
+          path: /tmp/rubocop
+      - store_artifacts:
+          path: /tmp/rubocop
+          destination: rubocop
+  # This jobs builds the documentation for the project and
+  # stores it so it's easily accessible for developers.
+  documentation:
+    docker:
+      - image: cimg/ruby:2.7.1
+    steps:
+      - run:
+          name: Creates documentation directory
+          command: mkdir /tmp/documentation
+      - setup_environment
+      - run:
+          name: Generates documentation
+          command: |
+            bundle exec yard doc \
+              --output-dir /tmp/documentation \
+              controllers/ decorators/ services/
+      - store_test_results:
+          path: /tmp/documentation
+      - store_artifacts:
+          path: /tmp/documentation
+          destination: documentation
+  # This job gets the next version for the docker image.
+  # For more detail, see the .circleci/version.rb script.
+  version:
+    docker:
+      - image: cimg/ruby:2.7.1
+    steps:
+      - checkout
+      - run:
+          name: Export the new version
+          command: echo 'export NEXT_VERSION=`ruby .circleci/version.rb`' >> $BASH_ENV
+      - run:
+          name: Display the name of the variable
+          command: echo ${NEXT_VERSION}
+  # This job builds and pushes the docker image into Docker HUB
+  docker:
+    docker: 
+      - image: cimg/ruby:2.7.1
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Logs in to Docker
+          command: echo $DOCKER_PWD | docker login $DOCKER_USER --password-stdin
+      - run:
+          name: Builds the image
+          command: |
+            docker build
+              --tag virtuatable/conversations:${NEXT_VERSION}
+              --file Dockerfile .
+      - run:
+          name: Pushes the image on Docker HUB
+          command: docker push virtuatable/conversations:${NEXT_VERSION}
+  # This job deploys the last version released on Docker HUB to
+  # the Kubernetes cluster declared in the KUBE_CONFIG env variable.
+  deployment:
+    docker:
+      - image: cimg/ruby:2.7.1
+    steps:
+      - kube/install-kubectl
+      - checkout
+      - run:
+          name: Create kubernetes directory
+          command: mkdir $HOME/.kube
+      - run:
+          name: Store the kubernetes configuration
+          command: echo -n "${KUBERNETES_CONFIG} | base64 --decode > $HOME/.kube/config"
+      - run:
+          name: Creates or update the service
+          command: kubectl apply -f kube/service.yml
+      - run:
+          name: Creates or updates the ingress
+          command: kubectl apply -f kube/ingress.yml
+      - run:
+          name: Updates the version in the deployment file
+          command: sed -i -e 's/<VERSION>/'"${NEXT_VERSION}"'/g kube/deployment.yml
+      - run:
+          name: Creates or updates the deployment
+          command: kubectl apply -f kube/deployment.yml
+  # This step creates the release in github following the version tagging
+  tag:
+    
+
+workflows:
+  version: 2.1
+  # This workflow runs every tests to ensure the application is compliant
+  # With our standards, then deploy it on the production environment.
+  # We directly deploy in production because our standards are high, and
+  # our services are well-tested.
+  production:
+    jobs:
+      - rspec
+      - rubocop
+      - documentation
+      - docker:
+          requires:
+            - rspec
+            - rubocop
+          filters:
+            branches:
+              only: master
+      - deployment
+          requires:
+            - docker
+          filters:
+            branches:
+              only: master
+      - tag
+          requires:
+            - docker
+          filters:
+            branches:
+              only: master

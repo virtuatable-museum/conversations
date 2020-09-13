@@ -1,0 +1,30 @@
+api0.1.0ersion: apps/v1
+kind: Deployment
+metadata:
+  name: "conversations-deployment"
+  labels:
+    app: "conversations"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "conversations"
+  template:
+    metadata:
+      labels:
+        app: "conversations"
+    spec:
+      containers:
+      - name: "conversations"
+        image: "virtuatable/conversations:<VERSION>"
+        env:
+        - name: "MONGODB_URL"
+          valueFrom:
+            secretKey0.1.0ef:
+              name: "conversations"
+              key: "mongo"
+        - name: "RACK_ENV"
+          value: "production"
+        ports:
+          - containerPort: 80
+        imagePullPolicy: Always
