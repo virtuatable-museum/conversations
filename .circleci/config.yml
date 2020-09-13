@@ -141,9 +141,6 @@ jobs:
       - run:
           name: Creates or updates the deployment
           command: kubectl apply -f kube/deployment.yml
-  # This step creates the release in github following the version tagging
-  tag:
-    
 
 workflows:
   version: 2.1
@@ -163,13 +160,7 @@ workflows:
           filters:
             branches:
               only: master
-      - deployment
-          requires:
-            - docker
-          filters:
-            branches:
-              only: master
-      - tag
+      - deployment:
           requires:
             - docker
           filters:
