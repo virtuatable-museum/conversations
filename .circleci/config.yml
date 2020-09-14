@@ -95,7 +95,7 @@ jobs:
       - checkout
       - run:
           name: Export the version in the environment
-          command: echo 'export NEXT_VERSION=`.circleci/version next`' >> $BASH_ENV
+          command: echo 'export NEXT_VERSION=`ruby .circleci/scripts/version.rb next`' >> $BASH_ENV
       - setup_remote_docker
       - run:
           name: Logs in to Docker
@@ -118,7 +118,7 @@ jobs:
       - checkout
       - run:
           name: Export the version in the environment
-          command: echo 'export NEXT_VERSION=`.circleci/version current`' >> $BASH_ENV
+          command: echo 'export NEXT_VERSION=`ruby .circleci/scripts/version.rb current`' >> $BASH_ENV
       - run:
           name: Create kubernetes directory
           command: mkdir $HOME/.kube
