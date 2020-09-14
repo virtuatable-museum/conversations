@@ -20,7 +20,7 @@ jobs:
   rspec:
     docker:
       - image: cimg/ruby:2.7.1
-      - image: mongo:4.4-bionic-ram
+      - image: circleci/mongo:4.4.1
     steps:
       - run:
           name: Creates RSpec directory
@@ -30,7 +30,7 @@ jobs:
           name: Runs unit tests
           command: |
             bundle exec rspec \
-              --format RSpecJunitFormatter \
+              --format RspecJunitFormatter \
               --out /tmp/results/rspec/results.xml \
               --format html \
               --out /tmp/results/rspec/results.html \
@@ -94,7 +94,7 @@ jobs:
       - checkout
       - run:
           name: Export the new version
-          command: echo 'export NEXT_VERSION=`ruby .circleci/version.rb`' >> $BASH_ENV
+          command: echo 'export NEXT_VERSION=`ruby .circleci/bump_version.rb`' >> $BASH_ENV
       - run:
           name: Display the name of the variable
           command: echo ${NEXT_VERSION}
