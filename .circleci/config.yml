@@ -167,7 +167,6 @@ workflows:
       - rubocop
       - documentation
       - version:
-          context: virtuatable
           context:
             - virtuatable
           requires:
