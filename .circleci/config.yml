@@ -7,7 +7,7 @@ executors:
   ruby:
     docker:
       - image: cimg/ruby:2.7.1
-    working_directory: /
+    working_directory: /ctx
 
 commands:
   # This command sets up the important bits of the ruby environment
@@ -105,12 +105,12 @@ jobs:
   docker:
     executor: ruby
     steps:
+      - checkout
       - attach_workspace:
-          at: /workspace
+          at: /ctx/workspace
       - run:
           name: Export the version in the environment
           command: echo 'export NEXT_VERSION=`ruby .circleci/bump_version.rb`' >> $BASH_ENV
-      - checkout
       - setup_remote_docker
       - run:
           name: Logs in to Docker
@@ -130,12 +130,12 @@ jobs:
     executor: ruby
     steps:
       - kube/install-kubectl
+      - checkout
       - attach_workspace:
-          at: /workspace
+          at: /ctx/workspace
       - run:
           name: Export the version in the environment
           command: echo 'export NEXT_VERSION=`ruby .circleci/bump_version.rb`' >> $BASH_ENV
-      - checkout
       - run:
           name: Create kubernetes directory
           command: mkdir $HOME/.kube
@@ -166,20 +166,12 @@ workflows:
       - rspec
       - rubocop
       - documentation
-      - version:
+      - docker:
           context:
             - virtuatable
           requires:
             - rspec
             - rubocop
-          filters:
-            branches:
-              only: master
-      - docker:
-          context:
-            - virtuatable
-          requires:
-            - version
           filters:
             branches:
               only: master
