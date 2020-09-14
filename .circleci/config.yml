@@ -111,8 +111,8 @@ jobs:
       - run:
           name: Builds the image
           command: |
-            docker build
-              --tag virtuatable/conversations:${NEXT_VERSION}
+            docker build \
+              --tag virtuatable/conversations:${NEXT_VERSION} \
               --file Dockerfile .
       - run:
           name: Pushes the image on Docker HUB
