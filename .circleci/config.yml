@@ -7,7 +7,6 @@ executors:
   ruby:
     docker:
       - image: cimg/ruby:2.7.1
-    working_directory: /tmp
 
 commands:
   # This command sets up the important bits of the ruby environment
@@ -21,18 +20,6 @@ commands:
           bundle update --bundler
 
 jobs:
-  # This job gets the next version for the docker image.
-  # For more detail, see the .circleci/version.rb script.
-  version:
-    executor: ruby
-    steps:
-      - checkout
-      - run:
-          name: Display the next version
-          command: ruby .circleci/bump_version.rb
-      - persist_to_workspace:
-          root: workspace
-          paths: version
   # This job runs the unit tests and stores the results in
   # a folder where circleci can access to display results.
   rspec:
@@ -106,11 +93,9 @@ jobs:
     executor: ruby
     steps:
       - checkout
-      - attach_workspace:
-          at: /tmp/workspace
       - run:
           name: Export the version in the environment
-          command: echo 'export NEXT_VERSION=`ruby .circleci/bump_version.rb`' >> $BASH_ENV
+          command: echo 'export NEXT_VERSION=`.circleci/version next`' >> $BASH_ENV
       - setup_remote_docker
       - run:
           name: Logs in to Docker
@@ -131,11 +116,9 @@ jobs:
     steps:
       - kube/install-kubectl
       - checkout
-      - attach_workspace:
-          at: /tmp/workspace
       - run:
           name: Export the version in the environment
-          command: echo 'export NEXT_VERSION=`ruby .circleci/bump_version.rb`' >> $BASH_ENV
+          command: echo 'export NEXT_VERSION=`.circleci/version current`' >> $BASH_ENV
       - run:
           name: Create kubernetes directory
           command: mkdir $HOME/.kube
