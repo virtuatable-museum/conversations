@@ -107,7 +107,7 @@ jobs:
       - setup_remote_docker
       - run:
           name: Logs in to Docker
-          command: echo $DOCKER_PWD | docker login $DOCKER_USER --password-stdin
+          command: echo $DOCKER_PWD | docker login --username $DOCKER_USER --password-stdin
       - run:
           name: Builds the image
           command: |
