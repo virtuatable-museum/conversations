@@ -94,7 +94,7 @@ jobs:
       - checkout
       - run:
           name: Export the new version
-          command: echo 'export NEXT_VERSION=`ruby .circleci/version.rb`' >> $BASH_ENV
+          command: echo 'export NEXT_VERSION=`ruby .circleci/bump_version.rb`' >> $BASH_ENV
       - run:
           name: Display the name of the variable
           command: echo ${NEXT_VERSION}
