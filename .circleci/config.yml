@@ -20,7 +20,7 @@ jobs:
   rspec:
     docker:
       - image: cimg/ruby:2.7.1
-      - image: mongo:4.4-bionic-ram
+      - image: circleci/mongo:4.4.1
     steps:
       - run:
           name: Creates RSpec directory
