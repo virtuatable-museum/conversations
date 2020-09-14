@@ -3,6 +3,11 @@ version: 2.1
 orbs:
   kube: circleci/kubernetes@0.11.0
 
+executors:
+  ruby:
+    docker:
+      - image: cimg/ruby:2.7.1
+
 commands:
   # This command sets up the important bits of the ruby environment
   # used in most of the jobs for the main workflow.
@@ -44,8 +49,7 @@ jobs:
   # This job runs the Rubocop Linter and stores the results
   # in a folder where circleci can access to display them.
   rubocop:
-    docker:
-      - image: cimg/ruby:2.7.1
+    executor: ruby
     steps:
       - run:
           name: Creates Rubocop directory
@@ -67,8 +71,7 @@ jobs:
   # This jobs builds the documentation for the project and
   # stores it so it's easily accessible for developers.
   documentation:
-    docker:
-      - image: cimg/ruby:2.7.1
+    executor: ruby
     steps:
       - run:
           name: Creates documentation directory
@@ -85,25 +88,14 @@ jobs:
       - store_artifacts:
           path: /tmp/documentation
           destination: documentation
-  # This job gets the next version for the docker image.
-  # For more detail, see the .circleci/version.rb script.
-  version:
-    docker:
-      - image: cimg/ruby:2.7.1
-    steps:
-      - checkout
-      - run:
-          name: Export the new version
-          command: echo 'export NEXT_VERSION=`ruby .circleci/bump_version.rb`' >> $BASH_ENV
-      - run:
-          name: Display the name of the variable
-          command: echo ${NEXT_VERSION}
   # This job builds and pushes the docker image into Docker HUB
   docker:
-    docker: 
-      - image: cimg/ruby:2.7.1
+    executor: ruby
     steps:
       - checkout
+      - run:
+          name: Export the version in the environment
+          command: echo 'export NEXT_VERSION=`ruby .circleci/scripts/version.rb next`' >> $BASH_ENV
       - setup_remote_docker
       - run:
           name: Logs in to Docker
@@ -120,11 +112,13 @@ jobs:
   # This job deploys the last version released on Docker HUB to
   # the Kubernetes cluster declared in the KUBE_CONFIG env variable.
   deployment:
-    docker:
-      - image: cimg/ruby:2.7.1
+    executor: ruby
     steps:
       - kube/install-kubectl
       - checkout
+      - run:
+          name: Export the version in the environment
+          command: echo 'export NEXT_VERSION=`ruby .circleci/scripts/version.rb current`' >> $BASH_ENV
       - run:
           name: Create kubernetes directory
           command: mkdir $HOME/.kube
