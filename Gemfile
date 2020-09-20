@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 group :development, :production, :test do
   gem 'arkaan', '2.7.2'
+  gem 'git', '1.7.0'
   gem 'octokit', '4.18.0'
   gem 'semantic', '1.6.1'
   gem 'virtuatable', '2.6.6'

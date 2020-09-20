@@ -93,7 +93,7 @@ jobs:
   docker:
     executor: ruby
     steps:
-      - checkout
+      - setup_environment
       - run:
           name: Export the version in the environment
           command: echo 'export NEXT_VERSION=`ruby ~/conversations/.circleci/scripts/version.rb next`' >> $BASH_ENV
@@ -116,7 +116,7 @@ jobs:
     executor: ruby
     steps:
       - kube/install-kubectl
-      - checkout
+      - setup_environment
       - run:
           name: Export the version in the environment
           command: echo 'export NEXT_VERSION=`ruby ~/conversations/.circleci/scripts/version.rb current`' >> $BASH_ENV
