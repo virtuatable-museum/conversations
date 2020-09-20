@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'octokit'
 require 'semantic'
-require 'git'
+require 'logger'
 
 def docker_url
   "https://registry.hub.docker.com/v2/repositories/virtuatable/conversations/tags"
@@ -11,12 +11,8 @@ def client
   Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
 end
 
-def local_git
-  ::Git.open('~/conversations', log: Logger.new(STDOUT))
-end
-
 def last_commit
-  local_git.log(1).first.sha
+  client.commits('virtuatable/conversations').first
 end
 
 def current_version
