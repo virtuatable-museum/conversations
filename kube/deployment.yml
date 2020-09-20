@@ -21,7 +21,7 @@ spec:
         env:
         - name: "MONGODB_URL"
           valueFrom:
-            secretKey0.1.0ef:
+            secretKeyRef:
               name: "conversations"
               key: "mongo"
         - name: "RACK_ENV"
