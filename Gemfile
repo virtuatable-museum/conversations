@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 group :runtime do
   gem 'arkaan', '2.7.2'
-  gem 'virtuatable', '2.6.6'
+  gem 'virtuatable', '2.7.0'
 end
 
 group :deployment do

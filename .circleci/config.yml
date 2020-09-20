@@ -19,8 +19,8 @@ commands:
           name: Install the Bundler gem
           command: gem install bundler --no-document
       - run:
-          name: Install the dependencies for tests
-          command: bundle install --without deployment
+          name: Configuration bundler and install dependencies
+          command: bundle set config with test && bundle install
   # This command sets up the environment for déployment purpose, it
   # mainly install dependencies used by the .circleci/script/version script
   setup_environment_for_deployment:
@@ -30,8 +30,8 @@ commands:
           name: Install the Bundler gem
           command: gem install bundler --no-document
       - run:
-          name: Install the dependencies for tests
-          command: bundle install --without test runtime
+          name: Configuration bundler and install dependencies
+          command: bundle set config with deployment && bundle install
 
 jobs:
   # This job runs the unit tests and stores the results in
