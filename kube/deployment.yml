@@ -4,6 +4,7 @@ metadata:
   name: "conversations-deployment"
   labels:
     app: "conversations"
+  namespace: api
 spec:
   replicas: 1
   selector:

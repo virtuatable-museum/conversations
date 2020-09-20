@@ -125,7 +125,7 @@ jobs:
           command: mkdir $HOME/.kube
       - run:
           name: Store the kubernetes configuration
-          command: echo -n "${KUBERNETES_CONFIG} | base64 --decode > $HOME/.kube/config"
+          command: echo -n "${KUBERNETES_CONFIG}" | base64 --decode > $HOME/.kube/config
       - run:
           name: Creates or update the service
           command: kubectl apply -f kube/service.yml
