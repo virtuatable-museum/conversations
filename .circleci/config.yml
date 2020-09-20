@@ -7,7 +7,7 @@ executors:
   ruby:
     docker:
       - image: cimg/ruby:2.7.1
-    working_directory: ~/workspace
+    working_directory: ~/conversations
 
 commands:
   # This command sets up the important bits of the ruby environment
@@ -96,7 +96,7 @@ jobs:
       - checkout
       - run:
           name: Export the version in the environment
-          command: echo 'export NEXT_VERSION=`ruby ${CIRCLE_WORKING_DIRECTORY}/.circleci/scripts/version.rb next`' >> $BASH_ENV
+          command: echo 'export NEXT_VERSION=`ruby ~/conversations/.circleci/scripts/version.rb next`' >> $BASH_ENV
       - setup_remote_docker
       - run:
           name: Logs in to Docker
@@ -119,7 +119,7 @@ jobs:
       - checkout
       - run:
           name: Export the version in the environment
-          command: echo 'export NEXT_VERSION=`ruby ${CIRCLE_WORKING_DIRECTORY}/.circleci/scripts/version.rb current`' >> $BASH_ENV
+          command: echo 'export NEXT_VERSION=`ruby ~/conversations/.circleci/scripts/version.rb current`' >> $BASH_ENV
       - run:
           name: Create kubernetes directory
           command: mkdir $HOME/.kube
