@@ -2,6 +2,7 @@
 require 'octokit'
 require 'semantic'
 require 'logger'
+require 'json'
 
 def docker_url
   "https://registry.hub.docker.com/v2/repositories/virtuatable/conversations/tags"
@@ -17,9 +18,9 @@ end
 
 def current_version
   body = JSON.parse(Faraday.get(docker_url).body)
-  Semantic::Version.new(body['results'][0]['name'])
-rescue
-  Semantic::Version.new('0.0.0')
+  results = body['results']
+  raw_version = results.empty? ? '0.0.0': results.first['name']
+  Semantic::Version.new(raw_version)
 end
 
 def next_version
