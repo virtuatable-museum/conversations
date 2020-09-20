@@ -134,7 +134,7 @@ jobs:
           command: kubectl apply -f kube/ingress.yml
       - run:
           name: Updates the version in the deployment file
-          command: sed -i -e 's/<VERSION>/'"${NEXT_VERSION}"'/g kube/deployment.yml
+          command: sed -i -e 's/<VERSION>/'"${NEXT_VERSION}"'/g' kube/deployment.yml
       - run:
           name: Creates or updates the deployment
           command: kubectl apply -f kube/deployment.yml
