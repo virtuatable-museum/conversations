@@ -1,14 +1,17 @@
 source 'https://rubygems.org'
 
-group :development, :production, :test do
+group :runtime do
   gem 'arkaan', '2.7.2'
-  gem 'git', '1.7.0'
-  gem 'octokit', '4.18.0'
-  gem 'semantic', '1.6.1'
   gem 'virtuatable', '2.6.6'
 end
 
-group :development, :test do
+group :deployment do
+  gem 'git', '1.7.0'
+  gem 'octokit', '4.18.0'
+  gem 'semantic', '1.6.1'
+end
+
+group :test do
   gem 'bcrypt', '3.1.13'
   gem 'database_cleaner', '1.8.5'
   gem 'factory_bot', '6.1.0'

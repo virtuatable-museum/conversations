@@ -11,14 +11,27 @@ executors:
 
 commands:
   # This command sets up the important bits of the ruby environment
-  # used in most of the jobs for the main workflow.
-  setup_environment:
+  # used in the job executing direct Ruby commands (eg: rspec)
+  setup_environment_for_tests:
     steps:
       - checkout
-      - run: |
-          gem install bundler --no-document
-      - run: |
-          bundle update --bundler
+      - run:
+          name: Install the Bundler gem
+          command: gem install bundler --no-document
+      - run:
+          name: Install the dependencies for tests
+          command: bundle install --without deployment
+  # This command sets up the environment for déployment purpose, it
+  # mainly install dependencies used by the .circleci/script/version script
+  setup_environment_for_deployment:
+    steps:
+      - checkout
+      - run:
+          name: Install the Bundler gem
+          command: gem install bundler --no-document
+      - run:
+          name: Install the dependencies for tests
+          command: bundle install --without test runtime
 
 jobs:
   # This job runs the unit tests and stores the results in
@@ -31,7 +44,7 @@ jobs:
       - run:
           name: Creates RSpec directory
           command: mkdir -p /tmp/results/rspec
-      - setup_environment
+      - setup_environment_for_tests
       - run:
           name: Runs unit tests
           command: |
@@ -55,7 +68,7 @@ jobs:
       - run:
           name: Creates Rubocop directory
           command: mkdir /tmp/rubocop
-      - setup_environment
+      - setup_environment_for_tests
       - run:
           name: Runs Rubocop checks
           command: |
@@ -77,7 +90,7 @@ jobs:
       - run:
           name: Creates documentation directory
           command: mkdir /tmp/documentation
-      - setup_environment
+      - setup_environment_for_tests
       - run:
           name: Generates documentation
           command: |
@@ -93,7 +106,7 @@ jobs:
   docker:
     executor: ruby
     steps:
-      - setup_environment
+      - setup_environment_for_deployment
       - run:
           name: Export the version in the environment
           command: echo 'export NEXT_VERSION=`ruby ~/conversations/.circleci/scripts/version.rb next`' >> $BASH_ENV
@@ -116,7 +129,7 @@ jobs:
     executor: ruby
     steps:
       - kube/install-kubectl
-      - setup_environment
+      - setup_environment_for_deployment
       - run:
           name: Export the version in the environment
           command: echo 'export NEXT_VERSION=`ruby ~/conversations/.circleci/scripts/version.rb current`' >> $BASH_ENV
