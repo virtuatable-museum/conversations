@@ -22,8 +22,8 @@ spec:
         - name: "MONGODB_URL"
           valueFrom:
             secretKeyRef:
-              name: "mongodb-credentials"
-              key: "uri"
+              name: "mongodb-uri"
+              key: "production"
         - name: "RACK_ENV"
           value: "production"
         ports:
