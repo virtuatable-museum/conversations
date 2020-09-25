@@ -146,6 +146,9 @@ jobs:
           name: Store the kubernetes configuration
           command: echo -n "${KUBERNETES_CONFIG}" | base64 --decode > $HOME/.kube/config
       - run:
+          name: Creates or updates the namespace
+          command: kubectl apply -f kube/namespace.yml
+      - run:
           name: Creates or update the service
           command: kubectl apply -f kube/service.yml
       - run:
