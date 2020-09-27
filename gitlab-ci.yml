@@ -1,0 +1,18 @@
+stages:
+  - checks
+
+default:
+  image: ruby:2.7.1
+  before_script:
+    # Installs the Bundler dependencies to later get gems
+    - gem install bundler --no-document
+    # Gets all the gems needed in the project as dependencies
+    - bundle install
+
+rspec:
+  stage: checks
+  script: bundle exec rspec
+
+rubocop:
+  stage: checks
+  script: bundle exec rubocop
