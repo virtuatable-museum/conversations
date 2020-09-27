@@ -3,11 +3,17 @@ stages:
 
 default:
   image: ruby:2.7.1
+  cache:
+    key: $(CI_COMMIT_REF_SLUG)
+    paths:
+      - vendor/ruby
   before_script:
     # Installs the Bundler dependencies to later get gems
     - gem install bundler --no-document
+    # Sets the path used for caching purposes.
+    - bundle config set path vendor/ruby
     # Gets all the gems needed in the project as dependencies
-    - bundle install
+    - bundle install -j $(nproc)
 
 rspec:
   stage: checks

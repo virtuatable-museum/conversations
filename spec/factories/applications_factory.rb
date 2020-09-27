@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :empty_application, class: Arkaan::OAuth::Application do
     factory :application do

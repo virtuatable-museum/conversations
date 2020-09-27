@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 group :runtime do
@@ -19,8 +21,8 @@ group :test do
   gem 'pry', '0.13.1'
   gem 'rack-test', '1.1.0', require: 'rack/test'
   gem 'rspec', '3.9.0'
-  gem 'rspec_junit_formatter', '0.4.1'
   gem 'rspec-json_expectations', '2.2.0', require: 'rspec/json_expectations'
+  gem 'rspec_junit_formatter', '0.4.1'
   gem 'rubocop', '0.90.0'
   gem 'simplecov', '0.19.0'
   gem 'yard', '0.9.25'

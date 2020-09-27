@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :empty_account, class: Arkaan::Account do
     factory :account do
