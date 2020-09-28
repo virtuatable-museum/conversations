@@ -1,9 +1,6 @@
 stages:
   - checks
 
-variables:
-  NEXT_VERSION: /bin/bash -l -c "ruby ~/conversations/.circleci/scripts/version.rb next"
-
 default:
   image: virtuatable/mongo-ruby-ci:1.0.1
   cache:
@@ -17,6 +14,8 @@ default:
     - /bin/bash -l -c "bundle config set path vendor/ruby"
     # Install all dependencies and cache them
     - /bin/bash -l -c "bundle install"
+    # Stores the next version in a corresponding file
+    - /bin/bash -l -c "ruby ~/conversations/.circleci/scripts/version.rb next > ./NEXT_VERSION"
 
 rspec:
   stage: checks
@@ -31,4 +30,4 @@ rubocop:
 docker:
   stage: checks
   script:
-    - echo $($NEXT_VERSION)
+    - cat ./NEXT_VERSION
