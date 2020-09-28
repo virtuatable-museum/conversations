@@ -8,16 +8,19 @@ default:
     paths:
       - vendor/ruby
   before_script:
-    - /bin/bash --login
     # Installs the Bundler dependencies to later get gems
-    - gem install bundler --no-document
+    - /bin/bash -l -c "gem install bundler --no-document"
     # Sets the path used for caching purposes, and install dependencies
-    - /bundle config set path vendor/ruby && bundle install
+    - /bin/bash -l -c "bundle config set path vendor/ruby"
+    # Install all dependencies and cache them
+    - /bin/bash -l -c "bundle install"
 
 rspec:
   stage: checks
-  script: bundle exec rspec
+  script:
+    - /bin/bash -l -c "bundle exec rspec"
 
 rubocop:
   stage: checks
-  script: bundle exec rubocop
+  script:
+    - /bin/bash -l -c "bundle exec rubocop"
