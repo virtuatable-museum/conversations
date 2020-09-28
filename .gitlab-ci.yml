@@ -15,7 +15,7 @@ default:
     # Install all dependencies and cache them
     - /bin/bash -l -c "bundle install"
     # Stores the next version in a corresponding file
-    - /bin/bash -l -c "ruby ~/conversations/.circleci/scripts/version.rb next > ./NEXT_VERSION"
+    - /bin/bash -l -c "ruby ./scripts/version.rb next > ./NEXT_VERSION"
 
 rspec:
   stage: checks
