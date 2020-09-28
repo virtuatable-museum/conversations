@@ -9,7 +9,7 @@ default:
       - vendor/ruby
   before_script:
     # Installs the Bundler dependencies to later get gems
-    - gem install bundler --no-document
+    - /bin/bash --login -c "gem install bundler --no-document"
     # Sets the path used for caching purposes.
     - bundle config set path vendor/ruby
     # Gets all the gems needed in the project as dependencies
