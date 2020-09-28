@@ -2,7 +2,7 @@ stages:
   - checks
 
 default:
-  image: ruby:2.7.1
+  image: virtuatable/mongo-ruby-ci:1.0.0
   cache:
     key: $(CI_COMMIT_REF_SLUG)
     paths:
