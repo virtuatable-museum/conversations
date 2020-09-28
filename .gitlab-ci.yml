@@ -1,6 +1,5 @@
 stages:
   - checks
-  - compile
 
 variables:
   NEXT_VERSION: ruby ~/conversations/.circleci/scripts/version.rb next
@@ -30,6 +29,6 @@ rubocop:
     - /bin/bash -l -c "bundle exec rubocop"
 
 docker:
-  stage: compile
+  stage: checks
   script:
-    - echo 'eval $NEXT_VERSION'
+    - echo $NEXT_VERSION
