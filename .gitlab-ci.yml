@@ -1,5 +1,6 @@
 stages:
   - checks
+  - compile
 
 variables:
   NEXT_VERSION: ruby ~/conversations/.circleci/scripts/version.rb next
