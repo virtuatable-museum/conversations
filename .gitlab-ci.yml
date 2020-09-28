@@ -31,4 +31,4 @@ rubocop:
 docker:
   stage: checks
   script:
-    - echo $NEXT_VERSION
+    - echo $($NEXT_VERSION)
