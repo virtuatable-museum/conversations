@@ -30,4 +30,4 @@ rubocop:
 docker:
   stage: checks
   script:
-    - cat ./NEXT_VERSION
+    - echo $DOCKER_PWD | docker login --username $DOCKER_USER --password-stdin
