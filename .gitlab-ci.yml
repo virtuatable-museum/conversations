@@ -1,6 +1,9 @@
 stages:
   - checks
 
+variables:
+  NEXT_VERSION: ruby ~/conversations/.circleci/scripts/version.rb next
+
 default:
   image: virtuatable/mongo-ruby-ci:1.0.1
   cache:
@@ -24,3 +27,8 @@ rubocop:
   stage: checks
   script:
     - /bin/bash -l -c "bundle exec rubocop"
+
+docker:
+  stage: compile
+  script:
+    - echo 'eval $NEXT_VERSION'
