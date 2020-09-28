@@ -2,7 +2,7 @@ stages:
   - checks
 
 default:
-  image: virtuatable/mongo-ruby-ci:1.0.1
+  image: virtuatable/ci:1.0.0
   cache:
     key: $(CI_COMMIT_REF_SLUG)
     paths:
@@ -17,10 +17,13 @@ default:
     # Stores the next version in a corresponding file
     - /bin/bash -l -c "bundle exec ruby ./scripts/version.rb next > ./NEXT_VERSION"
 
+# Executes the RSpec tests.
+# TODO : store the results in an artefact.
 rspec:
   stage: checks
   script:
     - /bin/bash -l -c "bundle exec rspec"
+
 
 rubocop:
   stage: checks
