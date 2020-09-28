@@ -10,14 +10,12 @@ default:
   before_script:
     # Installs the Bundler dependencies to later get gems
     - /bin/bash --login -c "gem install bundler --no-document"
-    # Sets the path used for caching purposes.
-    - bundle config set path vendor/ruby
-    # Gets all the gems needed in the project as dependencies
-    - bundle install -j $(nproc)
+    # Sets the path used for caching purposes, and install dependencies
+    - /bin/bash --login -c "bundle config set path vendor/ruby && bundle install"
 
 rspec:
   stage: checks
-  script: bundle exec rspec
+  script: /bin/bash --login -c "bundle exec rspec"
 
 rubocop:
   stage: checks
