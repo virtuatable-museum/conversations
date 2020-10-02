@@ -2,7 +2,7 @@ stages:
   - checks
 
 default:
-  image: virtuatable/ci:1.0.0
+  image: virtuatable/ci:1.0.1
   cache:
     key: $(CI_COMMIT_REF_SLUG)
     paths:
