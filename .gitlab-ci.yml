@@ -36,10 +36,8 @@ docker:
     # Logs in into docker, don't forget to create the environment variables on Gitlab
     - echo $DOCKER_PWD | docker login --username $DOCKER_USER --password-stdin
     # Stores the next version in an environment variable to access it easily
-    - echo 'export NEXT_VERSION=`cat ./NEXT_VERSION`'
+    - export NEXT_VERSION=`cat ./NEXT_VERSION`'
     # Builds the image for the service.
-    - docker build \
-        --tag virtuatable/conversations:${NEXT_VERSION} \
-        --file Dockerfile .
+    - docker build -t virtuatable/conversations:${NEXT_VERSION} .
     # Pushes the image to Docker HUB
     - docker push virtuatable/conversations:${NEXT_VERSION}
