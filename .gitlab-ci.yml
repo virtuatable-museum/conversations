@@ -42,4 +42,4 @@ docker:
         --tag virtuatable/conversations:${NEXT_VERSION} \
         --file Dockerfile .
     # Pushes the image to Docker HUB
-    docker push virtuatable/conversations:${NEXT_VERSION}
+    - docker push virtuatable/conversations:${NEXT_VERSION}
