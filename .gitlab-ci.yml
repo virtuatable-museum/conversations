@@ -2,32 +2,28 @@ stages:
   - checks
 
 default:
-  cache:
-    key: $(CI_COMMIT_REF_SLUG)
-    paths:
-      - vendor/ruby
   before_script:
     # Installs the Bundler dependencies to later get gems
-    - /bin/bash -l -c "gem install bundler --no-document"
+    - gem install bundler --no-document
     # Sets the path used for caching purposes, and install dependencies
-    - /bin/bash -l -c "bundle config set path vendor/ruby"
+    - bundle config set path vendor/ruby
     # Install all dependencies and cache them
-    - /bin/bash -l -c "bundle install"
+    - bundle install
     # Stores the next version in a corresponding file
-    - /bin/bash -l -c "bundle exec ruby ./scripts/version.rb next > ./NEXT_VERSION"
+    - bundle exec ruby ./scripts/version.rb next > ./NEXT_VERSION
 
 # Executes the RSpec tests.
 # TODO : store the results in an artefact.
 rspec:
   stage: checks
   script:
-    - /bin/bash -l -c "bundle exec rspec"
+    - bundle exec rspec
 
 
 rubocop:
   stage: checks
   script:
-    - /bin/bash -l -c "bundle exec rubocop"
+    - bundle exec rubocop
 
 docker:
   stage: checks
