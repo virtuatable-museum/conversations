@@ -20,14 +20,20 @@ default:
 rspec:
   stage: checks
   script:
-    - bundle exec rspec
+    - bundle exec rspec --format html --out rspec.html
+  artifacts:
+    paths:
+      - rspec.html
 
 # Checks the aesthetic of the code against Rubocop standards.
 # TODO : store the results in an artefact
 rubocop:
   stage: checks
   script:
-    - bundle exec rubocop
+    - bundle exec rubocop --fail-fast --format html --out rubocop.html
+  artifacts:
+    paths:
+      - rubocop.html
 
 documentation:
   stage: checks
