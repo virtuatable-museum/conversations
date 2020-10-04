@@ -120,6 +120,10 @@ jobs:
       - run:
           name: Logs in to Docker
           command: echo $DOCKER_PWD | docker login --username $DOCKER_USER --password-stdin
+
+      - run:
+          name: Show me who executes the docker commands please
+          command: whoami
       - run:
           name: Builds the image
           command: |
@@ -177,7 +181,8 @@ workflows:
             - rubocop
           filters:
             branches:
-              only: master
+              only:
+                - master
       - deployment:
           context:
             - virtuatable
@@ -185,4 +190,5 @@ workflows:
             - docker
           filters:
             branches:
-              only: master
+              only: 
+                - master
