@@ -37,6 +37,8 @@ docker:
     - echo $DOCKER_PWD | docker login --username $DOCKER_USER --password-stdin
     # Stores the next version in an environment variable to access it easily
     - export NEXT_VERSION=`cat ./NEXT_VERSION`
+    # Show me who executes the docker command please
+    - whoami
     # Builds the image for the service.
     - docker build -t virtuatable/conversations:${NEXT_VERSION} .
     # Pushes the image to Docker HUB
