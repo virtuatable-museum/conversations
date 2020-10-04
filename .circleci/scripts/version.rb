@@ -5,7 +5,15 @@ require 'logger'
 require 'json'
 
 def docker_url
-  "https://registry.hub.docker.com/v2/repositories/virtuatable/conversations/tags"
+  "https://registry.hub.docker.com/v2/repositories/virtuatable/conversations/tags?ordering=last_updated"
+end
+
+def docker_params
+  {
+    page: 1,
+    page_size: 1,
+    ordering: 'last_updated'
+  }
 end
 
 def client
@@ -17,7 +25,7 @@ def last_commit
 end
 
 def current_version
-  body = JSON.parse(Faraday.get(docker_url).body)
+  body = JSON.parse(Faraday.get(docker_url, docker_params).body)
   results = body['results']
   raw_version = results.empty? ? '0.0.0': results.first['name']
   Semantic::Version.new(raw_version)
