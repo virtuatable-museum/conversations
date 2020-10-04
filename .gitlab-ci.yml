@@ -20,10 +20,10 @@ default:
 rspec:
   stage: checks
   script:
-    - bundle exec rspec --format html --out rspec.html
+    - bundle exec rspec --format RspecJunitFormatter --out rspec.xml
   artifacts:
-    paths:
-      - rspec.html
+    reports:
+      junit: rspec.xml
 
 # Checks the aesthetic of the code against Rubocop standards.
 # TODO : store the results in an artefact
