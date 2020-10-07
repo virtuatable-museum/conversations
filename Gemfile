@@ -9,7 +9,7 @@ end
 
 group :deployment do
   gem 'git', '1.7.0'
-  gem 'octokit', '4.18.0'
+  gem 'gitlab', '4.16.1'
   gem 'semantic', '1.6.1'
 end
 

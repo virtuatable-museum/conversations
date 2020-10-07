@@ -5,6 +5,7 @@ stages:
   - checks
   - image creation
 
+
 default:
   before_script:
     # Installs the Bundler dependencies to later get gems
@@ -13,10 +14,14 @@ default:
     - bundle config set path vendor/ruby
     # Install all dependencies and cache them
     - bundle install
+
+.versions:
+  script:
     # Stores the next version in a corresponding file
     - bundle exec ruby ./scripts/version.rb next > ./NEXT_VERSION
     # Stores the current version for Kubernetes purpose
     - bundle exec ruby ./scripts/version.rb current > ./VERSION
+
 
 # Executes the RSpec tests.
 # TODO : store the results in an artefact.
@@ -46,6 +51,7 @@ documentation:
     - bundle exec yard doc controllers/ decorators/ services/
 
 docker:
+  extends: .versions
   stage: image creation
   script:
     # Logs in into docker, don't forget to create the environment variables on Gitlab
