@@ -65,4 +65,5 @@ docker:
     # Pushes the image to Docker HUB
     - docker push virtuatable/conversations:${NEXT_VERSION}
   only:
-    - master
+    refs:
+      - master
