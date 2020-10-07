@@ -1,21 +1,24 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'octokit'
+require 'gitlab'
 require 'semantic'
 require 'logger'
-require 'json'
+require 'faraday'
+
+Gitlab.endpoint = 'https://gitlab.com/api/v4'
+Gitlab.private_token = ENV['GITLAB_API_TOKEN']
 
 def docker_url
   'https://registry.hub.docker.com/v2/repositories/virtuatable/conversations/tags'
 end
 
-def client
-  Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
-end
-
 def last_commit
-  client.commits('virtuatable/conversations').first
+  commits = Gitlab.commits(
+    'virtuatable/services/conversations',
+    { page: 1, per_page: 1 }
+  )
+  commits.first
 end
 
 def current_version
@@ -36,16 +39,11 @@ def increment
   'patch'
 end
 
-def pull_request
-  repository = 'virtuatable/conversations'
-  requests = client.pull_requests(repository, { state: 'all' })
-  requests.find { |r| r[:merge_commit_sha] == last_commit }
-end
-
 def labels
-  return [] if pull_request.nil?
-
-  pull_request[:labels].map { |l| l[:name] }
+  merge_request = Gitlab.merge_requests(ENV['CI_PROJECT_ID']).find do |mr|
+    mr['merge_commit_sha'] == last_commit['id']
+  end
+  merge_request.nil? ? [] : merge_request['labels']
 end
 
 if ARGV.first == 'next'

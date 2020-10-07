@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'octokit'
+require 'gitlab'
 require 'semantic'
 require 'logger'
 require 'json'
@@ -18,10 +18,6 @@ end
 
 def client
   Octokit::Client.new(access_token: ENV['GITHUB_TOKEN'])
-end
-
-def last_commit
-  client.commits('virtuatable/conversations').first
 end
 
 def current_version
@@ -45,7 +41,7 @@ end
 def pull_request
   repository = 'virtuatable/conversations'
   requests = client.pull_requests(repository, {state: 'all'})
-  requests.find { |r| r[:merge_commit_sha] == last_commit }
+  requests.find { |r| r[:merge_commit_sha] == ENV['CI_COMMIT_SHA'] }
 end
 
 def labels
