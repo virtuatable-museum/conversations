@@ -89,7 +89,7 @@ kubernetes:
     # Applies the service creation to regroup the pods under one service
     - kubectl apply -f kube/service.yml
     # Applis the ingress creation to be able to access the service via an URL
-    - kubectl apply -f kube/ingress
+    - kubectl apply -f kube/ingress.yml
     # Applies the deployment creation to create the pods.
     - kubectl apply -f kube/deployment.yml
     # Remove the temporary configuration to not keep track of it.
