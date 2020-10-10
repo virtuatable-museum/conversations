@@ -16,7 +16,13 @@ default:
     - bundle install
 
 .versions:
-  script:
+  before_script:
+    # Installs the Bundler dependencies to later get gems
+    - gem install bundler --no-document
+    # Sets the path used for caching purposes, and install dependencies
+    - bundle config set path vendor/ruby
+    # Install all dependencies and cache them
+    - bundle install
     # Stores the next version in a corresponding file
     - bundle exec ruby ./scripts/version.rb next > ./NEXT_VERSION
     # Stores the current version for Kubernetes purpose
