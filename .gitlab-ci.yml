@@ -4,6 +4,7 @@ include:
 stages:
   - checks
   - image creation
+  - deployment
 
 
 default:
@@ -70,5 +71,28 @@ docker:
     - docker build -t virtuatable/conversations:${NEXT_VERSION} .
     # Pushes the image to Docker HUB
     - docker push virtuatable/conversations:${NEXT_VERSION}
+  only:
+    - master
+
+kubernetes:
+  extends: .versions
+  stage: deployment
+  script:
+    # Loads the configuration in a temporary file, deleted later.
+    - echo -n "${KUBERNETES_CONFIG}" | base64 --decode > /tmp/kubeconfig
+    # Gives kubernetes the path to the configuration
+    - export KUBECONFIG=/tmp/kubeconfig
+    # Replace the version in the deployment file to always load the last one.
+    - sed -i -e "s/<VERSION>/"`cat ./VERSION`"/g" kube/deployment.yml
+    # Applies the namespace creation if not already done.
+    - kubectl apply -f kube/namespace.yml
+    # Applies the service creation to regroup the pods under one service
+    - kubectl apply -f kube/service.yml
+    # Applis the ingress creation to be able to access the service via an URL
+    - kubectl apply -f kube/ingress
+    # Applies the deployment creation to create the pods.
+    - kubectl apply -f kube/deployment.yml
+    # Remove the temporary configuration to not keep track of it.
+    - rm /tmp/kubeconfig
   only:
     - master
